@@ -27,21 +27,32 @@
     "tunnel": {
         "profileTitleFormat": "Passepartout: %@",
         "refreshInterval": 3.0,
-        "betaReceiptPath": "beta-receipt",
-        "eligibilityCheckInterval": 3600.0
+        "verification": {
+            "production": {
+                "delay": 120.0,
+                "interval": 3600.0
+            },
+            "beta": {
+                "delay": 600.0,
+                "interval": 600.0
+            }
+        }
     },
     "api": {
         "timeoutInterval": 5.0
     },
+    "iap": {
+        "productsTimeoutInterval": 10.0
+    },
     "log": {
         "appPath": "app.log",
         "tunnelPath": "tunnel.log",
-        "sinceLast": 86400,
+        "sinceLast": 86400.0,
         "options": {
             "maxLevel": 3,
             "maxSize": 500000,
             "maxBufferedLines": 5000,
-            "maxAge": 86400
+            "maxAge": 86400.0
         },
         "formatter": {
             "timestamp": "HH:mm:ss",

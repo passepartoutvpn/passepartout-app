@@ -26,12 +26,6 @@
 import Foundation
 
 extension Bundle {
-    public var appStoreProductionReceiptURL: URL? {
-        appStoreReceiptURL?
-            .deletingLastPathComponent()
-            .appendingPathComponent("receipt") // could be "sandboxReceipt"
-    }
-
     public func unsafeDecode<T: Decodable>(_ type: T.Type, filename: String) -> T {
         guard let jsonURL = url(forResource: filename, withExtension: "json") else {
             fatalError("Unable to find \(filename).json in bundle")

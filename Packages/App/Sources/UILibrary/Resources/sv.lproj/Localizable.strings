@@ -36,6 +36,7 @@
 "errors.app.passepartout.no_active_modules" = "Profilen har inga aktiva moduler.";
 "errors.app.passepartout.parsing" = "Kan inte tolka filen.";
 "errors.app.passepartout.provider_required" = "Ingen leverantör vald.";
+"errors.app.passepartout.timeout" = "Åtgärden tog för lång tid.";
 "errors.app.permission_denied" = "Åtkomst nekad";
 "errors.app.tunnel" = "Kunde inte utföra åtgärden.";
 "errors.tunnel.auth" = "Autentisering misslyckades";
@@ -222,7 +223,6 @@
 "views.app.toolbar.new_profile.empty" = "Tom profil";
 "views.app.toolbar.new_profile.provider" = "Leverantör";
 "views.app.tv.header" = "Öppna %@ på din iOS- eller macOS-enhet och aktivera växeln \"%@\" i en profil för att den ska visas här.";
-"views.app.verifying_purchases" = "Verifierar köp...";
 "views.app_menu.items.quit" = "Avsluta %@";
 "views.diagnostics.alerts.report_issue.email" = "Enheten är inte konfigurerad för att skicka e-post.";
 "views.diagnostics.openvpn.rows.server_configuration" = "Serverkonfiguration";
@@ -244,12 +244,15 @@
 "views.migration.sections.main.header" = "Välj nedan de profiler från äldre versioner av %@ som du vill importera. Om dina profiler är lagrade på iCloud kan det ta en stund att synkronisera. Om du inte ser dem nu, kom tillbaka senare.";
 "views.migration.title" = "Migrera";
 "views.paywall.alerts.confirmation.message" = "Den här profilen kräver betalda funktioner för att fungera.";
+"views.paywall.alerts.confirmation.message.connect" = "Du kan testa anslutningen i %d minuter.";
 "views.paywall.alerts.confirmation.title" = "Köp krävs";
 "views.paywall.alerts.pending.message" = "Köpet väntar på extern bekräftelse. Funktionen aktiveras efter godkännande.";
 "views.paywall.alerts.restricted.message" = "Vissa funktioner är inte tillgängliga i denna version.";
 "views.paywall.alerts.restricted.title" = "Begränsad";
-"views.paywall.alerts.verifying.message" = "Vänta medan dina köp verifieras.";
-"views.paywall.alerts.verifying.title" = "Verifiering";
+"views.paywall.alerts.verification.boot" = "Det kan ta lite längre tid om din enhet just startades.";
+"views.paywall.alerts.verification.connect.1" = "Dina köp verifieras.";
+"views.paywall.alerts.verification.connect.2" = "Om verifieringen inte kan slutföras kommer anslutningen att avslutas om %d minuter.";
+"views.paywall.alerts.verification.edit" = "Vänligen vänta medan dina köp verifieras.";
 "views.paywall.rows.restore_purchases" = "Återställ köp";
 "views.paywall.sections.all_features.header" = "Den fullständiga versionen innehåller";
 "views.paywall.sections.full_products.header" = "Fullständig version";
@@ -286,6 +289,7 @@
 "views.ui.connection_status.on_demand_suffix" = " (på begäran)";
 "views.ui.purchase_required.purchase.help" = "Köp krävs";
 "views.ui.purchase_required.restricted.help" = "Funktionen är begränsad";
+"views.verification.message" = "Verifiering";
 "views.version.extra" = "%@ är ett projekt som underhålls av %@.\n\nKällkoden är offentligt tillgänglig på GitHub under GPLv3-licensen. Du hittar länkar på hemsidan.";
 "views.vpn.category.any" = "Alla kategorier";
 "views.vpn.no_servers" = "Inga servrar";

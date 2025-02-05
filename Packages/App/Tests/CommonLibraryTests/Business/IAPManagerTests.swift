@@ -405,8 +405,8 @@ extension IAPManagerTests {
         let sut = IAPManager(customUserLevel: .beta, receiptReader: reader)
 
         await sut.reloadReceipt()
-        XCTAssertTrue(sut.isRestricted)
-        XCTAssertTrue(sut.userLevel.isRestricted)
+        XCTAssertTrue(sut.isBeta)
+        XCTAssertTrue(sut.userLevel.isBeta)
     }
 
     func test_givenBetaApp_thenIsNotEligibleForAllFeatures() async {

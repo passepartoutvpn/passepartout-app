@@ -36,6 +36,7 @@
 "errors.app.passepartout.no_active_modules" = "配置文件没有激活模块。";
 "errors.app.passepartout.parsing" = "无法解析文件。";
 "errors.app.passepartout.provider_required" = "未选择提供商。";
+"errors.app.passepartout.timeout" = "操作超时。";
 "errors.app.permission_denied" = "权限被拒绝";
 "errors.app.tunnel" = "无法执行操作。";
 "errors.tunnel.auth" = "认证失败";
@@ -222,7 +223,6 @@
 "views.app.toolbar.new_profile.empty" = "空配置文件";
 "views.app.toolbar.new_profile.provider" = "提供商";
 "views.app.tv.header" = "在您的 iOS 或 macOS 设备上打开 %@，并启用配置文件的 \"%@\" 开关，使其显示在此处。";
-"views.app.verifying_purchases" = "正在验证购买...";
 "views.app_menu.items.quit" = "退出 %@";
 "views.diagnostics.alerts.report_issue.email" = "设备未配置为发送电子邮件。";
 "views.diagnostics.openvpn.rows.server_configuration" = "服务器配置";
@@ -244,12 +244,15 @@
 "views.migration.sections.main.header" = "选择以下来自 %@ 的旧版本配置文件进行导入。如果您的配置文件存储在 iCloud 中，可能需要一些时间进行同步。如果现在没有看到，请稍后再试。";
 "views.migration.title" = "迁移";
 "views.paywall.alerts.confirmation.message" = "此配置文件需要付费功能才能工作。";
+"views.paywall.alerts.confirmation.message.connect" = "您可以试用连接 %d 分钟。";
 "views.paywall.alerts.confirmation.title" = "需要购买";
 "views.paywall.alerts.pending.message" = "购买正在等待外部确认。功能将在获得批准后被授予。";
 "views.paywall.alerts.restricted.message" = "某些功能在此版本中不可用。";
 "views.paywall.alerts.restricted.title" = "受限";
-"views.paywall.alerts.verifying.message" = "请稍候，您的购买正在验证中。";
-"views.paywall.alerts.verifying.title" = "验证";
+"views.paywall.alerts.verification.boot" = "如果您的设备刚刚启动，这可能需要更长时间。";
+"views.paywall.alerts.verification.connect.1" = "您的购买正在验证中。";
+"views.paywall.alerts.verification.connect.2" = "如果无法完成验证，连接将在 %d 分钟后断开。";
+"views.paywall.alerts.verification.edit" = "请稍候，您的购买正在验证中。";
 "views.paywall.rows.restore_purchases" = "恢复购买";
 "views.paywall.sections.all_features.header" = "完整版本包括";
 "views.paywall.sections.full_products.header" = "完整版本";
@@ -286,6 +289,7 @@
 "views.ui.connection_status.on_demand_suffix" = "（按需）";
 "views.ui.purchase_required.purchase.help" = "需要购买";
 "views.ui.purchase_required.restricted.help" = "功能受限";
+"views.verification.message" = "验证";
 "views.version.extra" = "%@ 是由 %@ 维护的项目。\n\n源代码在 GitHub 上公开提供，遵循 GPLv3 许可协议，您可以在主页找到相关链接。";
 "views.vpn.category.any" = "所有类别";
 "views.vpn.no_servers" = "无服务器";

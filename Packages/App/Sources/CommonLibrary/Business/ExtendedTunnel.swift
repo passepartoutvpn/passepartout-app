@@ -29,6 +29,8 @@ import PassepartoutKit
 
 @MainActor
 public final class ExtendedTunnel: ObservableObject {
+    public static nonisolated let isManualKey = "isManual"
+
     private let defaults: UserDefaults?
 
     private let tunnel: Tunnel
@@ -102,7 +104,12 @@ extension ExtendedTunnel {
     public func install(_ profile: Profile) async throws {
         pp_log(.app, .notice, "Install profile \(profile.id)...")
         let newProfile = try processedProfile(profile)
-        try await tunnel.install(newProfile, connect: false, title: processedTitle)
+        try await tunnel.install(
+            newProfile,
+            connect: false,
+            options: .init(values: [Self.isManualKey: true as NSNumber]),
+            title: processedTitle
+        )
     }
 
     public func connect(with profile: Profile, force: Bool = false) async throws {
@@ -111,7 +118,12 @@ extension ExtendedTunnel {
         if !force && newProfile.isInteractive {
             throw AppError.interactiveLogin
         }
-        try await tunnel.install(newProfile, connect: true, title: processedTitle)
+        try await tunnel.install(
+            newProfile,
+            connect: true,
+            options: .init(values: [Self.isManualKey: true as NSNumber]),
+            title: processedTitle
+        )
     }
 
     public func disconnect() async throws {
@@ -176,10 +188,13 @@ private extension ExtendedTunnel {
                 guard let self else {
                     return
                 }
-                guard tunnel.status == .active else {
-                    return
+                if let lastErrorCode = value(forKey: TunnelEnvironmentKeys.lastErrorCode),
+                    lastErrorCode != self.lastErrorCode {
+                    self.lastErrorCode = lastErrorCode
                 }
-                dataCount = value(forKey: TunnelEnvironmentKeys.dataCount)
+                if tunnel.status == .active {
+                    dataCount = value(forKey: TunnelEnvironmentKeys.dataCount)
+                }
             }
             .store(in: &subscriptions)
     }

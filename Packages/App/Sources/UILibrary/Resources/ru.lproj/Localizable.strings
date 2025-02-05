@@ -36,6 +36,7 @@
 "errors.app.passepartout.no_active_modules" = "В профиле нет активных модулей.";
 "errors.app.passepartout.parsing" = "Не удалось разобрать файл.";
 "errors.app.passepartout.provider_required" = "Поставщик не выбран.";
+"errors.app.passepartout.timeout" = "Время операции истекло.";
 "errors.app.permission_denied" = "Доступ запрещен";
 "errors.app.tunnel" = "Не удалось выполнить операцию.";
 "errors.tunnel.auth" = "Ошибка аутентификации";
@@ -222,7 +223,6 @@
 "views.app.toolbar.new_profile.empty" = "Пустой профиль";
 "views.app.toolbar.new_profile.provider" = "Поставщик";
 "views.app.tv.header" = "Откройте %@ на вашем устройстве iOS или macOS и включите переключатель \"%@\" профиля, чтобы он отобразился здесь.";
-"views.app.verifying_purchases" = "Проверка покупок...";
 "views.app_menu.items.quit" = "Выйти из %@";
 "views.diagnostics.alerts.report_issue.email" = "Устройство не настроено для отправки электронной почты.";
 "views.diagnostics.openvpn.rows.server_configuration" = "Конфигурация сервера";
@@ -244,12 +244,15 @@
 "views.migration.sections.main.header" = "Выберите ниже профили из старых версий %@, которые вы хотите импортировать. Если ваши профили хранятся в iCloud, синхронизация может занять некоторое время. Если вы их сейчас не видите, вернитесь позже.";
 "views.migration.title" = "Миграция";
 "views.paywall.alerts.confirmation.message" = "Этот профиль требует платных функций для работы.";
+"views.paywall.alerts.confirmation.message.connect" = "Вы можете протестировать подключение в течение %d минут.";
 "views.paywall.alerts.confirmation.title" = "Требуется покупка";
 "views.paywall.alerts.pending.message" = "Покупка ожидает внешнего подтверждения. Функция будет активирована после одобрения.";
 "views.paywall.alerts.restricted.message" = "Некоторые функции недоступны в этой версии.";
 "views.paywall.alerts.restricted.title" = "Ограничено";
-"views.paywall.alerts.verifying.message" = "Пожалуйста, подождите, пока проверяются ваши покупки.";
-"views.paywall.alerts.verifying.title" = "Проверка";
+"views.paywall.alerts.verification.boot" = "Это может занять немного больше времени, если ваше устройство только что было включено.";
+"views.paywall.alerts.verification.connect.1" = "Ваши покупки проверяются.";
+"views.paywall.alerts.verification.connect.2" = "Если проверка не будет завершена, соединение завершится через %d минут.";
+"views.paywall.alerts.verification.edit" = "Пожалуйста, подождите, пока ваши покупки проверяются.";
 "views.paywall.rows.restore_purchases" = "Восстановить покупки";
 "views.paywall.sections.all_features.header" = "Полная версия включает";
 "views.paywall.sections.full_products.header" = "Полная версия";
@@ -286,6 +289,7 @@
 "views.ui.connection_status.on_demand_suffix" = " (по требованию)";
 "views.ui.purchase_required.purchase.help" = "Требуется покупка";
 "views.ui.purchase_required.restricted.help" = "Функция ограничена";
+"views.verification.message" = "Проверка";
 "views.version.extra" = "%@ — проект, поддерживаемый %@.\n\nИсходный код доступен на GitHub под лицензией GPLv3, ссылки можно найти на домашней странице.";
 "views.vpn.category.any" = "Все категории";
 "views.vpn.no_servers" = "Нет серверов";

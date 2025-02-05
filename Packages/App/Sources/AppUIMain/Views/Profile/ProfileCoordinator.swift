@@ -69,11 +69,7 @@ struct ProfileCoordinator: View {
 
     var body: some View {
         contentView
-            .modifier(PaywallModifier(
-                reason: $paywallReason,
-                okTitle: Strings.Views.Profile.Alerts.Purchase.Buttons.ok,
-                okAction: onDismiss
-            ))
+            .modifier(PaywallModifier(reason: $paywallReason))
             .withErrorHandler(errorHandler)
     }
 }
@@ -121,7 +117,7 @@ private extension ProfileCoordinator {
 
     func onCommitEditing() async throws {
         do {
-            if !iapManager.isRestricted {
+            if !iapManager.isBeta {
                 try await onCommitEditingStandard()
             } else {
                 try await onCommitEditingRestricted()
@@ -134,39 +130,33 @@ private extension ProfileCoordinator {
 
     // standard: always save, warn if purchase required
     func onCommitEditingStandard() async throws {
-        let savedProfile = try await profileEditor.save(to: profileManager, preferencesManager: preferencesManager)
         do {
-            try iapManager.verify(savedProfile, extra: profileEditor.extraFeatures)
+            let profileToSave = try profileEditor.build()
+            try iapManager.verify(profileToSave, extra: profileEditor.extraFeatures)
+            try await profileEditor.save(profileToSave, to: profileManager, preferencesManager: preferencesManager)
         } catch AppError.ineligibleProfile(let requiredFeatures) {
             guard !iapManager.isLoadingReceipt else {
+                let V = Strings.Views.Paywall.Alerts.Verification.self
                 errorHandler.handle(
-                    title: Strings.Views.Paywall.Alerts.Verifying.title,
-                    message: Strings.Views.Paywall.Alerts.Verifying.message
+                    title: Strings.Views.Paywall.Alerts.Confirmation.title,
+                    message: [V.edit, V.boot].joined(separator: " ")
                 )
                 return
             }
-            paywallReason = .init(requiredFeatures, needsConfirmation: true)
+            paywallReason = .init(
+                requiredFeatures,
+                needsConfirmation: true,
+                forConnecting: false
+            )
             return
         }
         onDismiss()
     }
 
-    // restricted: verify before saving
+    // restricted: skip verification
     func onCommitEditingRestricted() async throws {
-        do {
-            try iapManager.verify(profileEditor.activeModules, extra: profileEditor.extraFeatures)
-        } catch AppError.ineligibleProfile(let requiredFeatures) {
-            guard !iapManager.isLoadingReceipt else {
-                errorHandler.handle(
-                    title: Strings.Views.Paywall.Alerts.Verifying.title,
-                    message: Strings.Views.Paywall.Alerts.Verifying.message
-                )
-                return
-            }
-            paywallReason = .init(requiredFeatures)
-            return
-        }
-        try await profileEditor.save(to: profileManager, preferencesManager: preferencesManager)
+        let profileToSave = try profileEditor.build()
+        try await profileEditor.save(profileToSave, to: profileManager, preferencesManager: preferencesManager)
         onDismiss()
     }
 

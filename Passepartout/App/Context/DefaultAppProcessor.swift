@@ -76,7 +76,6 @@ extension DefaultAppProcessor: AppTunnelProcessor {
     }
 
     func willInstall(_ profile: Profile) throws -> Profile {
-        try iapManager.verify(profile)
 
         // validate provider modules
         do {

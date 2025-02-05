@@ -202,11 +202,9 @@ extension ProfileEditor {
         removedModules = [:]
     }
 
-    @discardableResult
-    public func save(to profileManager: ProfileManager, preferencesManager: PreferencesManager) async throws -> Profile {
+    public func save(_ profileToSave: Profile, to profileManager: ProfileManager, preferencesManager: PreferencesManager) async throws {
         do {
-            let newProfile = try build()
-            try await profileManager.save(newProfile, isLocal: true, remotelyShared: isShared)
+            try await profileManager.save(profileToSave, isLocal: true, remotelyShared: isShared)
 
             removedModules.keys.forEach {
                 do {
@@ -219,8 +217,6 @@ extension ProfileEditor {
                 }
             }
             removedModules.removeAll()
-
-            return newProfile
         } catch {
             pp_log(.App.profiles, .fault, "Unable to save edited profile: \(error)")
             throw error

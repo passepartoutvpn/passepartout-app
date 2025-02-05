@@ -36,6 +36,7 @@
 "errors.app.passepartout.no_active_modules" = "O perfil não possui módulos ativos.";
 "errors.app.passepartout.parsing" = "Não foi possível analisar o arquivo.";
 "errors.app.passepartout.provider_required" = "Nenhum provedor selecionado.";
+"errors.app.passepartout.timeout" = "A operação expirou.";
 "errors.app.permission_denied" = "Permissão negada";
 "errors.app.tunnel" = "Não foi possível executar a operação.";
 "errors.tunnel.auth" = "Falha na autenticação";
@@ -222,7 +223,6 @@
 "views.app.toolbar.new_profile.empty" = "Perfil vazio";
 "views.app.toolbar.new_profile.provider" = "Provedor";
 "views.app.tv.header" = "Abra %@ no seu dispositivo iOS ou macOS e ative o botão \"%@\" de um perfil para que ele apareça aqui.";
-"views.app.verifying_purchases" = "Verificando compras...";
 "views.app_menu.items.quit" = "Sair de %@";
 "views.diagnostics.alerts.report_issue.email" = "O dispositivo não está configurado para enviar e-mails.";
 "views.diagnostics.openvpn.rows.server_configuration" = "Configuração do servidor";
@@ -244,12 +244,15 @@
 "views.migration.sections.main.header" = "Selecione abaixo os perfis de versões antigas de %@ que você deseja importar. Caso seus perfis estejam armazenados no iCloud, pode levar um tempo para sincronizá-los. Se não os vir agora, volte mais tarde.";
 "views.migration.title" = "Migrar";
 "views.paywall.alerts.confirmation.message" = "Este perfil requer recursos pagos para funcionar.";
+"views.paywall.alerts.confirmation.message.connect" = "Você pode testar a conexão por %d minutos.";
 "views.paywall.alerts.confirmation.title" = "Compra necessária";
 "views.paywall.alerts.pending.message" = "A compra está pendente de confirmação externa. O recurso será creditado após a aprovação.";
 "views.paywall.alerts.restricted.message" = "Alguns recursos estão indisponíveis nesta versão.";
 "views.paywall.alerts.restricted.title" = "Restrito";
-"views.paywall.alerts.verifying.message" = "Aguarde enquanto suas compras estão sendo verificadas.";
-"views.paywall.alerts.verifying.title" = "Verificação";
+"views.paywall.alerts.verification.boot" = "Isso pode levar um pouco mais de tempo se seu dispositivo acabou de ser iniciado.";
+"views.paywall.alerts.verification.connect.1" = "Suas compras estão sendo verificadas.";
+"views.paywall.alerts.verification.connect.2" = "Se a verificação não for concluída, a conexão será encerrada em %d minutos.";
+"views.paywall.alerts.verification.edit" = "Aguarde enquanto suas compras estão sendo verificadas.";
 "views.paywall.rows.restore_purchases" = "Restaurar compras";
 "views.paywall.sections.all_features.header" = "A versão completa inclui";
 "views.paywall.sections.full_products.header" = "Versão completa";
@@ -286,6 +289,7 @@
 "views.ui.connection_status.on_demand_suffix" = " (sob demanda)";
 "views.ui.purchase_required.purchase.help" = "Compra necessária";
 "views.ui.purchase_required.restricted.help" = "Recurso restrito";
+"views.verification.message" = "Verificação";
 "views.version.extra" = "%@ é um projeto mantido por %@.\n\nO código-fonte está disponível publicamente no GitHub sob a licença GPLv3, você pode encontrar os links na página inicial.";
 "views.vpn.category.any" = "Todas as categorias";
 "views.vpn.no_servers" = "Nenhum servidor";

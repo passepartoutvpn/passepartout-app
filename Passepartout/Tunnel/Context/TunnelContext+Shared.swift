@@ -50,19 +50,8 @@ extension TunnelContext {
 
 private extension Dependencies {
     func tunnelReceiptReader() -> AppReceiptReader {
-        FallbackReceiptReader(
-            main: StoreKitReceiptReader(logger: iapLogger()),
-            beta: betaReceiptURL.map {
-                KvittoReceiptReader(url: $0)
-            }
+        SharedReceiptReader(
+            reader: StoreKitReceiptReader(logger: iapLogger())
         )
-    }
-
-    var betaReceiptURL: URL? {
-#if os(tvOS)
-        nil
-#else
-        BundleConfiguration.urlForBetaReceipt // copied by AppContext.onLaunch
-#endif
     }
 }

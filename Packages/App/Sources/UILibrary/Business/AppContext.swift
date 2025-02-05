@@ -46,8 +46,6 @@ public final class AppContext: ObservableObject, Sendable {
 
     public let tunnel: ExtendedTunnel
 
-    private let tunnelReceiptURL: URL?
-
     private let onEligibleFeaturesBlock: ((Set<AppFeature>) async -> Void)?
 
     private var launchTask: Task<Void, Error>?
@@ -64,7 +62,6 @@ public final class AppContext: ObservableObject, Sendable {
         profileManager: ProfileManager,
         registry: Registry,
         tunnel: ExtendedTunnel,
-        tunnelReceiptURL: URL?,
         onEligibleFeaturesBlock: ((Set<AppFeature>) async -> Void)? = nil
     ) {
         self.apiManager = apiManager
@@ -74,7 +71,6 @@ public final class AppContext: ObservableObject, Sendable {
         self.profileManager = profileManager
         self.registry = registry
         self.tunnel = tunnel
-        self.tunnelReceiptURL = tunnelReceiptURL
         self.onEligibleFeaturesBlock = onEligibleFeaturesBlock
         subscriptions = []
     }
@@ -135,18 +131,6 @@ private extension AppContext {
                 }
             }
             .store(in: &subscriptions)
-
-        // copy release receipt to tunnel for TestFlight eligibility (once is enough, it won't change)
-        if let tunnelReceiptURL,
-           let appReceiptURL = Bundle.main.appStoreProductionReceiptURL {
-            do {
-                pp_log(.App.iap, .info, "\tCopy release receipt to tunnel...")
-                try? FileManager.default.removeItem(at: tunnelReceiptURL)
-                try FileManager.default.copyItem(at: appReceiptURL, to: tunnelReceiptURL)
-            } catch {
-                pp_log(.App.iap, .error, "\tUnable to copy release receipt to tunnel: \(error)")
-            }
-        }
 
         do {
             pp_log(.app, .info, "\tFetch providers index...")

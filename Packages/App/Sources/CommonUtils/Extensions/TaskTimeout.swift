@@ -1,8 +1,8 @@
 //
-//  AppUserLevel.swift
+//  TaskTimeout.swift
 //  Passepartout
 //
-//  Created by Davide De Rosa on 12/19/23.
+//  Created by Davide De Rosa on 2/3/25.
 //  Copyright (c) 2025 Davide De Rosa. All rights reserved.
 //
 //  https://github.com/passepartoutvpn
@@ -25,20 +25,24 @@
 
 import Foundation
 
-public enum AppUserLevel: Int, Sendable {
-    case undefined = -1
-
-    case freemium = 0
-
-    case beta = 1
-
-    case fullV2 = 2 // without .appleTV
-
-    case fullV3 = 3
+public struct TaskTimeoutError: Error {
 }
 
-extension AppUserLevel {
-    public var isBeta: Bool {
-        self == .beta
+public func performTask<T>(withTimeout timeout: Int, taskBlock: @escaping () async throws -> T) async throws -> T {
+    let task = Task {
+        let taskResult = try await taskBlock()
+        try Task.checkCancellation()
+        return taskResult
+    }
+    let timeoutTask = Task {
+        try await Task.sleep(for: .seconds(timeout))
+        task.cancel()
+    }
+    do {
+        let result = try await task.value
+        timeoutTask.cancel()
+        return result
+    } catch {
+        throw TaskTimeoutError()
     }
 }

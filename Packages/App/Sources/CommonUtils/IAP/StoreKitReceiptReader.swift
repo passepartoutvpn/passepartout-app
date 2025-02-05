@@ -34,40 +34,9 @@ public final class StoreKitReceiptReader: InAppReceiptReader, Sendable {
     }
 
     public func receipt() async -> InAppReceipt? {
-        var startDate: Date
-        var elapsed: TimeInterval
+        let result = await entitlements()
 
-        startDate = Date()
-        logger.debug("Start fetching original build number...")
-        let originalBuildNumber: Int?
-        do {
-            switch try await AppTransaction.shared {
-            case .verified(let tx):
-                originalBuildNumber = Int(tx.originalAppVersion)
-            default:
-                originalBuildNumber = nil
-            }
-        } catch {
-            originalBuildNumber = nil
-        }
-        elapsed = -startDate.timeIntervalSinceNow
-        logger.debug("Fetched original build number: \(elapsed)")
-
-        startDate = Date()
-        logger.debug("Start fetching transactions...")
-        var transactions: [Transaction] = []
-        for await entitlement in Transaction.currentEntitlements {
-            switch entitlement {
-            case .verified(let tx):
-                transactions.append(tx)
-            default:
-                break
-            }
-        }
-        elapsed = -startDate.timeIntervalSinceNow
-        logger.debug("Fetched transactions: \(elapsed)")
-
-        let purchaseReceipts = transactions
+        let purchaseReceipts = result.txs
             .compactMap {
                 InAppReceipt.PurchaseReceipt(
                     productIdentifier: $0.productID,
@@ -77,6 +46,46 @@ public final class StoreKitReceiptReader: InAppReceiptReader, Sendable {
                 )
             }
 
-        return InAppReceipt(originalBuildNumber: originalBuildNumber, purchaseReceipts: purchaseReceipts)
+        return InAppReceipt(originalBuildNumber: result.build, purchaseReceipts: purchaseReceipts)
+    }
+}
+
+private extension StoreKitReceiptReader {
+    func entitlements() async -> (build: Int?, txs: [Transaction]) {
+        async let build = Task {
+            let startDate = Date()
+            logger.debug("Start fetching original build number...")
+            let originalBuildNumber: Int?
+            do {
+                switch try await AppTransaction.shared {
+                case .verified(let tx):
+                    originalBuildNumber = Int(tx.originalAppVersion)
+                default:
+                    originalBuildNumber = nil
+                }
+            } catch {
+                originalBuildNumber = nil
+            }
+            let elapsed = -startDate.timeIntervalSinceNow
+            logger.debug("Fetched original build number: \(elapsed)")
+            return originalBuildNumber
+        }
+        async let txs = Task {
+            let startDate = Date()
+            logger.debug("Start fetching transactions...")
+            var transactions: [Transaction] = []
+            for await entitlement in Transaction.currentEntitlements {
+                switch entitlement {
+                case .verified(let tx):
+                    transactions.append(tx)
+                default:
+                    break
+                }
+            }
+            let elapsed = -startDate.timeIntervalSinceNow
+            logger.debug("Fetched transactions: \(elapsed)")
+            return transactions
+        }
+        return await (build.value, txs.value)
     }
 }

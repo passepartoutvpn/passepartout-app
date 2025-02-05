@@ -36,6 +36,7 @@
 "errors.app.passepartout.no_active_modules" = "Профіль не має активних модулів.";
 "errors.app.passepartout.parsing" = "Не вдалося розібрати файл.";
 "errors.app.passepartout.provider_required" = "Не вибрано постачальника.";
+"errors.app.passepartout.timeout" = "Час виконання операції вичерпано.";
 "errors.app.permission_denied" = "Доступ заборонено";
 "errors.app.tunnel" = "Не вдалося виконати операцію.";
 "errors.tunnel.auth" = "Помилка аутентифікації";
@@ -222,7 +223,6 @@
 "views.app.toolbar.new_profile.empty" = "Порожній профіль";
 "views.app.toolbar.new_profile.provider" = "Постачальник";
 "views.app.tv.header" = "Відкрийте %@ на вашому пристрої iOS або macOS і увімкніть перемикач \"%@\" профілю, щоб він з’явився тут.";
-"views.app.verifying_purchases" = "Перевірка покупок...";
 "views.app_menu.items.quit" = "Вийти з %@";
 "views.diagnostics.alerts.report_issue.email" = "Пристрій не налаштований на надсилання електронних листів.";
 "views.diagnostics.openvpn.rows.server_configuration" = "Конфігурація сервера";
@@ -244,12 +244,15 @@
 "views.migration.sections.main.header" = "Виберіть нижче профілі зі старих версій %@, які ви хочете імпортувати. Якщо ваші профілі зберігаються в iCloud, може знадобитися час для їх синхронізації. Якщо ви не бачите їх зараз, поверніться пізніше.";
 "views.migration.title" = "Перенесення";
 "views.paywall.alerts.confirmation.message" = "Цей профіль потребує платних функцій для роботи.";
+"views.paywall.alerts.confirmation.message.connect" = "Ви можете протестувати підключення протягом %d хвилин.";
 "views.paywall.alerts.confirmation.title" = "Потрібна покупка";
 "views.paywall.alerts.pending.message" = "Покупка очікує зовнішнього підтвердження. Функція буде увімкнена після схвалення.";
 "views.paywall.alerts.restricted.message" = "Деякі функції недоступні в цій версії.";
 "views.paywall.alerts.restricted.title" = "Обмежено";
-"views.paywall.alerts.verifying.message" = "Будь ласка, зачекайте, поки ваші покупки перевіряються.";
-"views.paywall.alerts.verifying.title" = "Перевірка";
+"views.paywall.alerts.verification.boot" = "Це може зайняти трохи більше часу, якщо ваш пристрій щойно запустився.";
+"views.paywall.alerts.verification.connect.1" = "Ваші покупки перевіряються.";
+"views.paywall.alerts.verification.connect.2" = "Якщо перевірку не вдасться завершити, підключення завершиться через %d хвилин.";
+"views.paywall.alerts.verification.edit" = "Будь ласка, зачекайте, поки ваші покупки перевіряються.";
 "views.paywall.rows.restore_purchases" = "Відновити покупки";
 "views.paywall.sections.all_features.header" = "Повна версія включає";
 "views.paywall.sections.full_products.header" = "Повна версія";
@@ -286,6 +289,7 @@
 "views.ui.connection_status.on_demand_suffix" = " (за запитом)";
 "views.ui.purchase_required.purchase.help" = "Потрібна покупка";
 "views.ui.purchase_required.restricted.help" = "Функція обмежена";
+"views.verification.message" = "Перевірка";
 "views.version.extra" = "%@ є проектом, який підтримується %@.\n\nВихідний код доступний публічно на GitHub під ліцензією GPLv3. Посилання можна знайти на домашній сторінці.";
 "views.vpn.category.any" = "Усі категорії";
 "views.vpn.no_servers" = "Немає серверів";

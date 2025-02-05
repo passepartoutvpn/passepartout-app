@@ -45,5 +45,5 @@ public protocol AppTunnelProcessor: Sendable {
 }
 
 public protocol PacketTunnelProcessor: Sendable {
-    nonisolated func willStart(_ profile: Profile) throws -> Profile
+    nonisolated func willProcess(_ profile: Profile) throws -> Profile
 }

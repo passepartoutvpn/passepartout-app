@@ -1,5 +1,5 @@
 //
-//  FallbackReceiptReader.swift
+//  SharedReceiptReader.swift
 //  Passepartout
 //
 //  Created by Davide De Rosa on 11/6/24.
@@ -27,19 +27,13 @@ import CommonUtils
 import Foundation
 import PassepartoutKit
 
-public actor FallbackReceiptReader: AppReceiptReader {
-    private let mainReader: InAppReceiptReader
-
-    private nonisolated let betaReader: InAppReceiptReader?
+public actor SharedReceiptReader: AppReceiptReader {
+    private let reader: InAppReceiptReader
 
     private var pendingTask: Task<InAppReceipt?, Never>?
 
-    public init(
-        main mainReader: InAppReceiptReader & Sendable,
-        beta betaReader: (InAppReceiptReader & Sendable)?
-    ) {
-        self.mainReader = mainReader
-        self.betaReader = betaReader
+    public init(reader: InAppReceiptReader & Sendable) {
+        self.reader = reader
     }
 
     public func receipt(at userLevel: AppUserLevel) async -> InAppReceipt? {
@@ -59,17 +53,10 @@ public actor FallbackReceiptReader: AppReceiptReader {
     }
 }
 
-private extension FallbackReceiptReader {
+private extension SharedReceiptReader {
     func asyncReceipt(at userLevel: AppUserLevel) async -> InAppReceipt? {
         pp_log(.App.iap, .info, "\tParse receipt for user level \(userLevel)")
-        if userLevel == .beta, let betaReader {
-            pp_log(.App.iap, .info, "\tTestFlight, read beta receipt")
-            if let receipt = await betaReader.receipt() {
-                return receipt
-            }
-            pp_log(.App.iap, .info, "\tTestFlight, no beta receipt found!")
-        }
-        pp_log(.App.iap, .info, "\tProduction, read main receipt")
-        return await mainReader.receipt()
+        pp_log(.App.iap, .info, "\tRead receipt")
+        return await reader.receipt()
     }
 }

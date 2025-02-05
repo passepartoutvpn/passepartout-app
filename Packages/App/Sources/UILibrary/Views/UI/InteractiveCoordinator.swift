@@ -171,12 +171,10 @@ private extension InteractiveCoordinator {
     }
 
     func confirm() {
-        Task {
-            do {
-                try await manager.complete()
-            } catch {
-                onError(error)
-            }
+        do {
+            try manager.complete()
+        } catch {
+            onError(error)
         }
     }
 

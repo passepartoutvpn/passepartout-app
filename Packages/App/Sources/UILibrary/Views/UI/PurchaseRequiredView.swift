@@ -39,7 +39,7 @@ public struct PurchaseRequiredView<Content>: View where Content: View {
     let content: (_ isRestricted: Bool) -> Content
 
     public var body: some View {
-        content(iapManager.isRestricted)
+        content(iapManager.isBeta)
             .opaque(!isEligible)
     }
 }

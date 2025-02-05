@@ -192,7 +192,7 @@ private extension MigrateView {
             pp_log(.App.migration, .notice, "Migrated \(migrated.count) profiles")
 
             // TODO: ### restore auto-deletion after stable 3.0.0, otherwise users could not downgrade
-//            if !iapManager.isRestricted {
+//            if !iapManager.isBeta {
 //                do {
 //                    try await migrationManager.deleteMigratableProfiles(withIds: Set(migrated.map(\.id)))
 //                    pp_log(.App.migration, .notice, "Discarded \(migrated.count) migrated profiles from old store")

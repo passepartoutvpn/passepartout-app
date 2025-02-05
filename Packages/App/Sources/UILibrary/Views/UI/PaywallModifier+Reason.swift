@@ -34,12 +34,16 @@ extension PaywallModifier {
 
         public let needsConfirmation: Bool
 
+        public let forConnecting: Bool
+
         public init(
             _ requiredFeatures: Set<AppFeature>,
-            needsConfirmation: Bool = false
+            needsConfirmation: Bool = false,
+            forConnecting: Bool = true
         ) {
             self.requiredFeatures = requiredFeatures
             self.needsConfirmation = needsConfirmation
+            self.forConnecting = forConnecting
         }
     }
 }

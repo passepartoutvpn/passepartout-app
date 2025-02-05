@@ -90,7 +90,7 @@ private extension StorageSection {
         if iapManager.isEligible(for: .appleTV) {
             return nil
         }
-        if !iapManager.isRestricted {
+        if !iapManager.isBeta {
             return Strings.Modules.General.Sections.Storage.Footer.Purchase.tvRelease
         } else {
             return Strings.Modules.General.Sections.Storage.Footer.Purchase.tvBeta

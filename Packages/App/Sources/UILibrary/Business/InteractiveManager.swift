@@ -29,7 +29,7 @@ import PassepartoutKit
 
 @MainActor
 public final class InteractiveManager: ObservableObject {
-    public typealias CompletionBlock = (Profile) async throws -> Void
+    public typealias CompletionBlock = (Profile) throws -> Void
 
     @Published
     public var isPresented = false
@@ -48,9 +48,9 @@ public final class InteractiveManager: ObservableObject {
         isPresented = true
     }
 
-    public func complete() async throws {
+    public func complete() throws {
         isPresented = false
         let newProfile = try editor.build()
-        try await onComplete?(newProfile)
+        try onComplete?(newProfile)
     }
 }

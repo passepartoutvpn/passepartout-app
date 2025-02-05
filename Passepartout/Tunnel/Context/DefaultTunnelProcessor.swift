@@ -33,7 +33,7 @@ final class DefaultTunnelProcessor: Sendable {
 }
 
 extension DefaultTunnelProcessor: PacketTunnelProcessor {
-    func willStart(_ profile: Profile) throws -> Profile {
+    func willProcess(_ profile: Profile) throws -> Profile {
         do {
             var builder = profile.builder()
             try builder.modules.forEach {

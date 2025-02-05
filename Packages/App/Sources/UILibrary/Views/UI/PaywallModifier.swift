@@ -34,9 +34,7 @@ public struct PaywallModifier: ViewModifier {
     @Binding
     private var reason: PaywallReason?
 
-    private let okTitle: String?
-
-    private let okAction: (() -> Void)?
+    private let onCancel: (() -> Void)?
 
     @State
     private var isConfirming = false
@@ -47,14 +45,9 @@ public struct PaywallModifier: ViewModifier {
     @State
     private var isPurchasing = false
 
-    public init(
-        reason: Binding<PaywallReason?>,
-        okTitle: String? = nil,
-        okAction: (() -> Void)? = nil
-    ) {
+    public init(reason: Binding<PaywallReason?>, onCancel: (() -> Void)? = nil) {
         _reason = reason
-        self.okTitle = okTitle
-        self.okAction = okAction
+        self.onCancel = onCancel
     }
 
     public func body(content: Content) -> some View {
@@ -90,7 +83,7 @@ public struct PaywallModifier: ViewModifier {
                 guard let reason = $0 else {
                     return
                 }
-                if !iapManager.isRestricted {
+                if !iapManager.isBeta {
                     if reason.needsConfirmation {
                         isConfirming = true
                     } else {
@@ -104,27 +97,9 @@ public struct PaywallModifier: ViewModifier {
 }
 
 private extension PaywallModifier {
-    var ineligibleFeatures: [String] {
-        guard let reason else {
-            return []
-        }
-        return iapManager
-            .excludingEligible(from: reason.requiredFeatures)
-            .map(\.localizedDescription)
-            .sorted()
-    }
-
     func alertMessage(startingWith header: String, features: [String]) -> String {
-        header + "\n\n" + features
-            .joined(separator: "\n")
-    }
-}
+        header + "\n\n" + features.joined(separator: "\n")
 
-private extension IAPManager {
-    func excludingEligible(from features: Set<AppFeature>) -> Set<AppFeature> {
-        features.filter {
-            !isEligible(for: $0)
-        }
     }
 }
 
@@ -138,14 +113,9 @@ private extension PaywallModifier {
             // IMPORTANT: retain reason because it serves paywall content
             isPurchasing = true
         }
-        if let okTitle {
-            Button(okTitle) {
-                reason = nil
-                okAction?()
-            }
-        }
         Button(Strings.Global.Actions.cancel, role: .cancel) {
             reason = nil
+            onCancel?()
         }
     }
 
@@ -154,8 +124,13 @@ private extension PaywallModifier {
     }
 
     var confirmationMessageString: String {
-        alertMessage(
-            startingWith: Strings.Views.Paywall.Alerts.Confirmation.message,
+        let V = Strings.Views.Paywall.Alerts.Confirmation.self
+        var messages = [V.message]
+        if reason?.forConnecting == true {
+            messages.append(V.Message.connect(limitedMinutes))
+        }
+        return alertMessage(
+            startingWith: messages.joined(separator: " "),
             features: ineligibleFeatures
         )
     }
@@ -166,7 +141,7 @@ private extension PaywallModifier {
 private extension PaywallModifier {
     func restrictedActions() -> some View {
         Button(Strings.Global.Nouns.ok) {
-            //
+            onCancel?()
         }
     }
 
@@ -175,8 +150,13 @@ private extension PaywallModifier {
     }
 
     var restrictedMessageString: String {
-        alertMessage(
-            startingWith: Strings.Views.Paywall.Alerts.Restricted.message,
+        let V = Strings.Views.Paywall.Alerts.self
+        var messages = [V.Restricted.message]
+        if reason?.forConnecting == true {
+            messages.append(V.Confirmation.Message.connect(limitedMinutes))
+        }
+        return alertMessage(
+            startingWith: messages.joined(separator: " "),
             features: ineligibleFeatures
         )
     }
@@ -186,12 +166,40 @@ private extension PaywallModifier {
 
 private extension PaywallModifier {
     func modalDestination() -> some View {
-        reason.map {
+        assert(!iapManager.isLoadingReceipt, "Paywall presented while still loading receipt?")
+        return reason.map {
             PaywallView(
                 isPresented: $isPurchasing,
                 features: iapManager.excludingEligible(from: $0.requiredFeatures)
             )
             .themeNavigationStack()
+        }
+    }
+}
+
+// MARK: - Logic
+
+private extension PaywallModifier {
+    var ineligibleFeatures: [String] {
+        guard let reason else {
+            return []
+        }
+        return iapManager
+            .excludingEligible(from: reason.requiredFeatures)
+            .map(\.localizedDescription)
+            .sorted()
+    }
+
+    var limitedMinutes: Int {
+        let params = Constants.shared.tunnel.verificationParameters(isBeta: iapManager.isBeta)
+        return Int(params.delay / 60.0)
+    }
+}
+
+private extension IAPManager {
+    func excludingEligible(from features: Set<AppFeature>) -> Set<AppFeature> {
+        features.filter {
+            !isEligible(for: $0)
         }
     }
 }

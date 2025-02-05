@@ -59,6 +59,12 @@ extension AppError: LocalizedError {
     }
 }
 
+extension TaskTimeoutError: PassepartoutErrorMappable {
+    public var asPassepartoutError: PassepartoutError {
+        PassepartoutError(.timeout)
+    }
+}
+
 // MARK: - App side
 
 extension PassepartoutError: @retroactive LocalizedError {
@@ -101,6 +107,9 @@ extension PassepartoutError: @retroactive LocalizedError {
 
         case .providerRequired:
             return Strings.Errors.App.Passepartout.providerRequired
+
+        case .timeout:
+            return Strings.Errors.App.Passepartout.timeout
 
         case .unhandled:
             return reason?.localizedDescription

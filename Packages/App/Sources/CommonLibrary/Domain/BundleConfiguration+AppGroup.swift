@@ -36,14 +36,6 @@ extension BundleConfiguration {
     public static var urlForTunnelLog: URL {
         urlForCaches.appending(path: Constants.shared.log.tunnelPath)
     }
-
-    public static var urlForBetaReceipt: URL? {
-#if os(iOS)
-        urlForCaches.appending(path: Constants.shared.tunnel.betaReceiptPath)
-#else
-        nil
-#endif
-    }
 }
 
 // App Group container is not available on tvOS (#1007)

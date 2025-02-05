@@ -81,7 +81,6 @@ extension AppContext {
             productsAtBuild: dependencies.productsAtBuild()
         )
         let processor = dependencies.appProcessor(with: iapManager)
-        let tunnelReceiptURL = BundleConfiguration.urlForBetaReceipt
 
         let tunnelEnvironment = dependencies.tunnelEnvironment()
 #if targetEnvironment(simulator)
@@ -216,7 +215,6 @@ extension AppContext {
             profileManager: profileManager,
             registry: dependencies.registry,
             tunnel: tunnel,
-            tunnelReceiptURL: tunnelReceiptURL,
             onEligibleFeaturesBlock: onEligibleFeaturesBlock
         )
     }()
@@ -252,20 +250,9 @@ private extension Dependencies {
             }
             return mockHelper.receiptReader
         }
-        return FallbackReceiptReader(
-            main: StoreKitReceiptReader(logger: iapLogger()),
-            beta: betaReceiptURL.map {
-                KvittoReceiptReader(url: $0)
-            }
+        return SharedReceiptReader(
+            reader: StoreKitReceiptReader(logger: iapLogger())
         )
-    }
-
-    var betaReceiptURL: URL? {
-#if os(tvOS)
-        nil
-#else
-        Bundle.main.appStoreProductionReceiptURL
-#endif
     }
 
     var mirrorsRemoteRepository: Bool {

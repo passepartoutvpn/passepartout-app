@@ -86,7 +86,7 @@ extension IAPManager {
 
     public func purchasableProducts(for products: [AppProduct]) async throws -> [InAppProduct] {
         do {
-            let inAppProducts = try await inAppHelper.fetchProducts()
+            let inAppProducts = try await inAppHelper.fetchProducts(timeout: Constants.shared.iap.productsTimeoutInterval)
             return products.compactMap {
                 inAppProducts[$0]
             }
@@ -126,8 +126,8 @@ extension IAPManager {
 // MARK: - Eligibility
 
 extension IAPManager {
-    public var isRestricted: Bool {
-        userLevel.isRestricted
+    public var isBeta: Bool {
+        userLevel.isBeta
     }
 
     public func isEligible(for feature: AppFeature) -> Bool {
@@ -259,7 +259,7 @@ extension IAPManager {
                     .store(in: &subscriptions)
 
                 if withProducts {
-                    let products = try await inAppHelper.fetchProducts()
+                    let products = try await inAppHelper.fetchProducts(timeout: Constants.shared.iap.productsTimeoutInterval)
                     pp_log(.App.iap, .info, "Available in-app products: \(products.map(\.key))")
                 }
             } catch {
@@ -267,10 +267,8 @@ extension IAPManager {
             }
         }
     }
-}
 
-private extension IAPManager {
-    func fetchLevelIfNeeded() async {
+    public func fetchLevelIfNeeded() async {
         guard userLevel == .undefined else {
             return
         }

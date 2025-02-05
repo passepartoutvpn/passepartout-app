@@ -139,6 +139,8 @@ public enum Strings {
         public static let parsing = Strings.tr("Localizable", "errors.app.passepartout.parsing", fallback: "Unable to parse file.")
         /// No provider selected.
         public static let providerRequired = Strings.tr("Localizable", "errors.app.passepartout.provider_required", fallback: "No provider selected.")
+        /// The operation timed out.
+        public static let timeout = Strings.tr("Localizable", "errors.app.passepartout.timeout", fallback: "The operation timed out.")
       }
     }
     public enum Tunnel {
@@ -596,8 +598,6 @@ public enum Strings {
       }
     }
     public enum App {
-      /// Verifying purchases...
-      public static let verifyingPurchases = Strings.tr("Localizable", "views.app.verifying_purchases", fallback: "Verifying purchases...")
       public enum Folders {
         /// My profiles
         public static let `default` = Strings.tr("Localizable", "views.app.folders.default", fallback: "My profiles")
@@ -740,6 +740,12 @@ public enum Strings {
           public static let message = Strings.tr("Localizable", "views.paywall.alerts.confirmation.message", fallback: "This profile requires paid features to work.")
           /// Purchase required
           public static let title = Strings.tr("Localizable", "views.paywall.alerts.confirmation.title", fallback: "Purchase required")
+          public enum Message {
+            /// You may test the connection for %d minutes.
+            public static func connect(_ p1: Int) -> String {
+              return Strings.tr("Localizable", "views.paywall.alerts.confirmation.message.connect", p1, fallback: "You may test the connection for %d minutes.")
+            }
+          }
         }
         public enum Pending {
           /// The purchase is pending external confirmation. The feature will be credited upon approval.
@@ -751,11 +757,19 @@ public enum Strings {
           /// Restricted
           public static let title = Strings.tr("Localizable", "views.paywall.alerts.restricted.title", fallback: "Restricted")
         }
-        public enum Verifying {
+        public enum Verification {
+          /// This may take a little longer if your device was just started.
+          public static let boot = Strings.tr("Localizable", "views.paywall.alerts.verification.boot", fallback: "This may take a little longer if your device was just started.")
           /// Please wait while your purchases are being verified.
-          public static let message = Strings.tr("Localizable", "views.paywall.alerts.verifying.message", fallback: "Please wait while your purchases are being verified.")
-          /// Verifying
-          public static let title = Strings.tr("Localizable", "views.paywall.alerts.verifying.title", fallback: "Verifying")
+          public static let edit = Strings.tr("Localizable", "views.paywall.alerts.verification.edit", fallback: "Please wait while your purchases are being verified.")
+          public enum Connect {
+            /// Your purchases are being verified.
+            public static let _1 = Strings.tr("Localizable", "views.paywall.alerts.verification.connect.1", fallback: "Your purchases are being verified.")
+            /// If verification cannot be completed, the connection will end in %d minutes.
+            public static func _2(_ p1: Int) -> String {
+              return Strings.tr("Localizable", "views.paywall.alerts.verification.connect.2", p1, fallback: "If verification cannot be completed, the connection will end in %d minutes.")
+            }
+          }
         }
       }
       public enum Rows {
@@ -894,6 +908,10 @@ public enum Strings {
           public static let help = Strings.tr("Localizable", "views.ui.purchase_required.restricted.help", fallback: "Feature is restricted")
         }
       }
+    }
+    public enum Verification {
+      /// Verifying...
+      public static let message = Strings.tr("Localizable", "views.verification.message", fallback: "Verifying...")
     }
     public enum Version {
       /// %@ is a project maintained by %@.

@@ -65,8 +65,7 @@ extension AppContext {
             preferencesManager: PreferencesManager(),
             profileManager: profileManager,
             registry: Registry(),
-            tunnel: tunnel,
-            tunnelReceiptURL: BundleConfiguration.urlForBetaReceipt
+            tunnel: tunnel
         )
     }()
 }

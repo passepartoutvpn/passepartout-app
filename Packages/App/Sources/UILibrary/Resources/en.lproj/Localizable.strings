@@ -39,7 +39,6 @@
 "views.about.credits.notices" = "Notices";
 "views.about.credits.translations" = "Translations";
 
-"views.app.verifying_purchases" = "Verifying purchases...";
 "views.app.installed_profile.none.name" = "No profile";
 "views.app.installed_profile.none.status" = "Tap list to connect";
 "views.app.profile.no_modules" = "No active modules";
@@ -87,8 +86,11 @@
 "views.paywall.rows.restore_purchases" = "Restore purchases";
 "views.paywall.alerts.confirmation.title" = "Purchase required";
 "views.paywall.alerts.confirmation.message" = "This profile requires paid features to work.";
-"views.paywall.alerts.verifying.title" = "Verifying";
-"views.paywall.alerts.verifying.message" = "Please wait while your purchases are being verified.";
+"views.paywall.alerts.confirmation.message.connect" = "You may test the connection for %d minutes.";
+"views.paywall.alerts.verification.connect.1" = "Your purchases are being verified.";
+"views.paywall.alerts.verification.connect.2" = "If verification cannot be completed, the connection will end in %d minutes.";
+"views.paywall.alerts.verification.edit" = "Please wait while your purchases are being verified.";
+"views.paywall.alerts.verification.boot" = "This may take a little longer if your device was just started.";
 "views.paywall.alerts.restricted.title" = "Restricted";
 "views.paywall.alerts.restricted.message" = "Some features are unavailable in this build.";
 "views.paywall.alerts.pending.message" = "The purchase is pending external confirmation. The feature will be credited upon approval.";
@@ -125,6 +127,8 @@
 "views.ui.connection_status.on_demand_suffix" = " (on-demand)";
 "views.ui.purchase_required.purchase.help" = "Purchase required";
 "views.ui.purchase_required.restricted.help" = "Feature is restricted";
+
+"views.verification.message" = "Verifying...";
 
 "views.version.extra" = "%@ is a project maintained by %@.\n\nSource code is publicly available on GitHub under the GPLv3, you can find links in the home page.";
 
@@ -358,6 +362,7 @@
 "errors.app.passepartout.no_active_modules" = "The profile has no active modules.";
 "errors.app.passepartout.parsing" = "Unable to parse file.";
 "errors.app.passepartout.provider_required" = "No provider selected.";
+"errors.app.passepartout.timeout" = "The operation timed out.";
 
 "errors.tunnel.auth" = "Auth failed";
 "errors.tunnel.compression" = "Compression unsupported";

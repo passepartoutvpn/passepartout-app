@@ -98,17 +98,40 @@ public struct Constants: Decodable, Sendable {
     }
 
     public struct Tunnel: Decodable, Sendable {
+        public struct Verification: Decodable, Sendable {
+            public struct Parameters: Decodable, Sendable {
+                public let delay: TimeInterval
+
+                public let interval: TimeInterval
+            }
+
+            public let production: Parameters
+
+            public let beta: Parameters
+        }
+
         public let profileTitleFormat: String
 
         public let refreshInterval: TimeInterval
 
-        public let betaReceiptPath: String
+        public let verification: Verification
 
-        public let eligibilityCheckInterval: TimeInterval
+        public func verificationDelayMinutes(isBeta: Bool) -> Int {
+            let params = verificationParameters(isBeta: isBeta)
+            return Int(params.delay / 60.0)
+        }
+
+        public func verificationParameters(isBeta: Bool) -> Verification.Parameters {
+            isBeta ? verification.beta : verification.production
+        }
     }
 
     public struct API: Decodable, Sendable {
         public let timeoutInterval: TimeInterval
+    }
+
+    public struct IAP: Decodable, Sendable {
+        public let productsTimeoutInterval: Int
     }
 
     public struct Log: Decodable, Sendable {
@@ -146,8 +169,6 @@ public struct Constants: Decodable, Sendable {
         public let sinceLast: TimeInterval
 
         public let options: LocalLogger.Options
-
-        public let maxAge: TimeInterval?
     }
 
     public let bundleKey: String
@@ -163,6 +184,8 @@ public struct Constants: Decodable, Sendable {
     public let tunnel: Tunnel
 
     public let api: API
+
+    public let iap: IAP
 
     public let log: Log
 }

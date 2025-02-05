@@ -36,6 +36,7 @@
 "errors.app.passepartout.no_active_modules" = "Το προφίλ δεν έχει ενεργές μονάδες.";
 "errors.app.passepartout.parsing" = "Δεν ήταν δυνατή η ανάλυση αρχείου.";
 "errors.app.passepartout.provider_required" = "Δεν έχει επιλεγεί πάροχος.";
+"errors.app.passepartout.timeout" = "Η λειτουργία έληξε λόγω χρονικού ορίου.";
 "errors.app.permission_denied" = "Άρνηση άδειας";
 "errors.app.tunnel" = "Δεν ήταν δυνατή η εκτέλεση της ενέργειας.";
 "errors.tunnel.auth" = "Η επαλήθευση απέτυχε";
@@ -222,7 +223,6 @@
 "views.app.toolbar.new_profile.empty" = "Κενό προφίλ";
 "views.app.toolbar.new_profile.provider" = "Πάροχος";
 "views.app.tv.header" = "Ανοίξτε %@ στη συσκευή σας iOS ή macOS και ενεργοποιήστε το διακόπτη \"%@\" ενός προφίλ για να εμφανιστεί εδώ.";
-"views.app.verifying_purchases" = "Επαλήθευση αγορών...";
 "views.app_menu.items.quit" = "Κλείσιμο %@";
 "views.diagnostics.alerts.report_issue.email" = "Η συσκευή δεν είναι ρυθμισμένη για αποστολή email.";
 "views.diagnostics.openvpn.rows.server_configuration" = "Διαμόρφωση διακομιστή";
@@ -244,12 +244,15 @@
 "views.migration.sections.main.header" = "Επιλέξτε παρακάτω τα προφίλ από τις παλιές εκδόσεις του %@ που θέλετε να εισάγετε. Εάν τα προφίλ σας είναι αποθηκευμένα στο iCloud, μπορεί να χρειαστεί λίγος χρόνος για να συγχρονιστούν. Εάν δεν τα βλέπετε τώρα, επιστρέψτε αργότερα.";
 "views.migration.title" = "Μεταφορά";
 "views.paywall.alerts.confirmation.message" = "Αυτό το προφίλ απαιτεί επί πληρωμή λειτουργίες για να λειτουργήσει.";
+"views.paywall.alerts.confirmation.message.connect" = "Μπορείτε να δοκιμάσετε τη σύνδεση για %d λεπτά.";
 "views.paywall.alerts.confirmation.title" = "Απαιτείται αγορά";
 "views.paywall.alerts.pending.message" = "Η αγορά εκκρεμεί για εξωτερική επιβεβαίωση. Η λειτουργία θα πιστωθεί μετά την έγκριση.";
 "views.paywall.alerts.restricted.message" = "Ορισμένες λειτουργίες δεν είναι διαθέσιμες σε αυτήν την έκδοση.";
 "views.paywall.alerts.restricted.title" = "Περιορισμένο";
-"views.paywall.alerts.verifying.message" = "Παρακαλώ περιμένετε ενώ οι αγορές σας επαληθεύονται.";
-"views.paywall.alerts.verifying.title" = "Επαλήθευση";
+"views.paywall.alerts.verification.boot" = "Αυτό μπορεί να διαρκέσει λίγο περισσότερο αν η συσκευή σας μόλις ξεκίνησε.";
+"views.paywall.alerts.verification.connect.1" = "Οι αγορές σας επαληθεύονται.";
+"views.paywall.alerts.verification.connect.2" = "Αν η επαλήθευση δεν ολοκληρωθεί, η σύνδεση θα τερματιστεί σε %d λεπτά.";
+"views.paywall.alerts.verification.edit" = "Παρακαλώ περιμένετε όσο επαληθεύονται οι αγορές σας.";
 "views.paywall.rows.restore_purchases" = "Επαναφορά αγορών";
 "views.paywall.sections.all_features.header" = "Η πλήρης έκδοση περιλαμβάνει";
 "views.paywall.sections.full_products.header" = "Πλήρης έκδοση";
@@ -286,6 +289,7 @@
 "views.ui.connection_status.on_demand_suffix" = " (κατ' απαίτηση)";
 "views.ui.purchase_required.purchase.help" = "Απαιτείται αγορά";
 "views.ui.purchase_required.restricted.help" = "Η λειτουργία είναι περιορισμένη";
+"views.verification.message" = "Επαλήθευση";
 "views.version.extra" = "Το %@ είναι ένα έργο που συντηρείται από τον/την %@.\n\nΟ πηγαίος κώδικας είναι διαθέσιμος δημόσια στο GitHub υπό την άδεια GPLv3. Μπορείτε να βρείτε τους συνδέσμους στην αρχική σελίδα.";
 "views.vpn.category.any" = "Όλες οι κατηγορίες";
 "views.vpn.no_servers" = "Δεν υπάρχουν διακομιστές";

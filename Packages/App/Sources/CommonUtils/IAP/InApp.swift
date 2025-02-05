@@ -71,12 +71,6 @@ public protocol InAppHelper {
     func restorePurchases() async throws
 }
 
-extension InAppHelper {
-    public func fetchProducts() async throws -> [ProductType: InAppProduct] {
-        try await fetchProducts(timeout: 3)
-    }
-}
-
 public struct InAppReceipt: Sendable {
     public struct PurchaseReceipt: Sendable {
         public let productIdentifier: String?

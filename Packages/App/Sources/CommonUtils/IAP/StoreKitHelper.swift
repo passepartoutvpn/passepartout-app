@@ -65,21 +65,8 @@ extension StoreKitHelper {
     }
 
     public func fetchProducts(timeout: Int) async throws -> [ProductType: InAppProduct] {
-        let skProducts = try await withThrowingTaskGroup(of: [Product]?.self) { group in
-            group.addTask {
-                try await Product.products(for: self.products.map(self.inAppIdentifier))
-            }
-            group.addTask {
-                try await Task.sleep(nanoseconds: UInt64(timeout) * 1_000_000_000)
-                return nil
-            }
-            for try await result in group {
-                if let products = result {
-                    group.cancelAll()
-                    return products
-                }
-            }
-            throw URLError(.timedOut)
+        let skProducts = try await performTask(withTimeout: timeout) {
+            try await Product.products(for: self.products.map(self.inAppIdentifier))
         }
         return skProducts.reduce(into: [:]) {
             guard let pid = ProductType(rawValue: $1.id) else {

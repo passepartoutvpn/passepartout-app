@@ -49,7 +49,7 @@ struct AboutCoordinator: View {
     var body: some View {
         AboutContentView(
             profileManager: profileManager,
-            isRestricted: iapManager.isRestricted,
+            isRestricted: iapManager.isBeta,
             path: $path,
             navigationRoute: $navigationRoute,
             linkContent: linkView(to:),
