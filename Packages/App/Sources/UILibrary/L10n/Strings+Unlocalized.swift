@@ -86,6 +86,8 @@ extension Strings {
             public static let proxyPort = "1080"
 
             public static let pacURL = "http://proxy.com/pac.url"
+
+            public static let keepAlive = "30"
         }
 
         public enum Issues {

@@ -97,7 +97,7 @@ private struct DestinationView: View {
                 Form {
                     OpenVPNView.ConfigurationView(
                         isServerPushed: false,
-                        configuration: configuration.builder(),
+                        configuration: .constant(configuration.builder()),
                         credentialsRoute: nil
                     )
                 }

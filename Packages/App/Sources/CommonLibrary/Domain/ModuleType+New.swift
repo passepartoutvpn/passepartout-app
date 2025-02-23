@@ -35,9 +35,13 @@ extension ModuleType {
             })
 
         case .wireGuard:
-            return WireGuardModule.Builder(providerSelection: providerId.map {
-                .init(id: $0)
-            })
+            var builder = WireGuardModule.Builder()
+            if let providerId {
+                builder.providerSelection = .init(id: providerId)
+            } else {
+                builder.configurationBuilder = .init(privateKey: "")
+            }
+            return builder
 
         case .dns:
             return DNSModule.Builder()

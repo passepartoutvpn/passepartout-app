@@ -41,6 +41,13 @@ extension String {
     public var withTrailingDots: String {
         "\(self)..."
     }
+
+    public func trimmedSplit(separator: String) -> [String] {
+        split(separator: separator)
+            .map {
+                $0.trimmingCharacters(in: .whitespaces)
+            }
+    }
 }
 
 extension String {

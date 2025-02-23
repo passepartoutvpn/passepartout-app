@@ -87,11 +87,11 @@ private extension OpenVPNView {
 
     @ViewBuilder
     var contentView: some View {
-        if let configuration = draft.wrappedValue.configurationBuilder {
+        if let configurationBinding {
             remotesLink
             ConfigurationView(
                 isServerPushed: isServerPushed,
-                configuration: configuration,
+                configuration: configurationBinding,
                 credentialsRoute: ProfileRoute(OpenVPNModule.Subroute.credentials)
             )
         } else {
@@ -131,14 +131,27 @@ private extension OpenVPNView {
             selectedEntity: providerEntity,
             entityDestination: ProfileRoute(OpenVPNModule.Subroute.providerServer),
             paywallReason: $paywallReason,
-            providerRows: {
-                moduleGroup(for: providerAccountRows)
-            }
+            providerRows: providerRows
         )
     }
 
-    var providerAccountRows: [ModuleRow]? {
-        [.push(caption: Strings.Modules.Openvpn.credentials, route: HashableRoute(ProfileRoute(OpenVPNModule.Subroute.credentials)))]
+    func providerRows() -> some View {
+        ThemeModulePush(caption: Strings.Modules.Openvpn.credentials, route: ProfileRoute(OpenVPNModule.Subroute.credentials))
+    }
+}
+
+// MARK: - Logic
+
+private extension OpenVPNView {
+    var configurationBinding: Binding<OpenVPN.Configuration.Builder>? {
+        guard draft.wrappedValue.configurationBuilder != nil else {
+            return nil
+        }
+        return Binding {
+            draft.wrappedValue.configurationBuilder ?? .init()
+        } set: {
+            draft.wrappedValue.configurationBuilder = $0
+        }
     }
 }
 
@@ -146,5 +159,5 @@ private extension OpenVPNView {
 
 #Preview {
     let module = OpenVPNModule.Builder(configurationBuilder: .forPreviews)
-    return module.preview(title: "OpenVPN")
+    return module.preview()
 }

@@ -31,33 +31,28 @@ extension OpenVPNView {
     struct ConfigurationView: View {
         let isServerPushed: Bool
 
-        let configuration: OpenVPN.Configuration.Builder
+        @Binding
+        var configuration: OpenVPN.Configuration.Builder
 
         let credentialsRoute: (any Hashable)?
 
         var body: some View {
-            moduleSection(for: accountRows, header: Strings.Global.Nouns.account)
+            accountSection
             if !isServerPushed {
-                moduleSection(for: pullRows, header: Strings.Modules.Openvpn.pull)
+                pullSection
             }
-            moduleSection(for: redirectRows, header: Strings.Modules.Openvpn.redirectGateway)
-            moduleSection(
-                for: ipRows(for: configuration.ipv4, routes: configuration.routes4),
-                header: Strings.Unlocalized.ipv4
-            )
-            moduleSection(
-                for: ipRows(for: configuration.ipv6, routes: configuration.routes6),
-                header: Strings.Unlocalized.ipv6
-            )
-            moduleSection(for: dnsRows, header: Strings.Unlocalized.dns)
-            moduleSection(for: proxyRows, header: Strings.Unlocalized.proxy)
-            moduleSection(for: communicationRows, header: Strings.Modules.Openvpn.communication)
-            moduleSection(for: compressionRows, header: Strings.Modules.Openvpn.compression)
+            redirectSection
+            ipv4Section
+            ipv6Section
+            dnsSection
+            proxySection
+            communicationSection
+            compressionSection
             if !isServerPushed {
-                moduleSection(for: tlsRows, header: Strings.Unlocalized.tls)
+                tlsSection
             }
-            moduleSection(for: keepAliveRows, header: Strings.Global.Nouns.keepAlive)
-            moduleSection(for: otherRows, header: Strings.Global.Nouns.other)
+            keepAliveSection
+            otherSection
         }
     }
 }
@@ -65,216 +60,383 @@ extension OpenVPNView {
 // MARK: - Constant
 
 private extension OpenVPNView.ConfigurationView {
-    var accountRows: [ModuleRow]? {
-        guard let credentialsRoute else {
-            return nil
-        }
-        guard configuration.authUserPass == true else {
-            return nil
-        }
-        return [.push(
-            caption: Strings.Modules.Openvpn.credentials,
-            route: HashableRoute(credentialsRoute))
-        ]
-    }
-
-    var pullRows: [ModuleRow]? {
-        configuration.pullMask?
-            .map(\.localizedDescription)
-            .sorted()
-            .map {
-                .text(caption: $0, value: nil)
+    var accountSection: some View {
+        credentialsRoute.map { route in
+            themeModuleSection(if: accountRows, header: Strings.Global.Nouns.account) {
+                ThemeModulePush(
+                    caption: Strings.Modules.Openvpn.credentials,
+                    route: route
+                )
             }
-            .nilIfEmpty
+        }
     }
 
-    func ipRows(for ip: IPSettings?, routes: [Route]?) -> [ModuleRow]? {
-        var rows: [ModuleRow] = []
+    var pullSection: some View {
+        configuration.pullMask
+            .map { mask in
+                themeModuleSection(if: pullRows, header: Strings.Modules.Openvpn.pull) {
+                    ForEach(mask.map(\.localizedDescription).sorted(), id: \.self) {
+                        ThemeModuleText(caption: $0, value: nil)
+                    }
+                }
+            }
+    }
+
+    var redirectSection: some View {
+        configuration.routingPolicies
+            .map { policies in
+                themeModuleSection(if: redirectRows, header: Strings.Modules.Openvpn.redirectGateway) {
+                    let sortedPolicies = policies.compactMap {
+                        switch $0 {
+                        case .IPv4: return Strings.Unlocalized.ipv4
+                        case .IPv6: return Strings.Unlocalized.ipv6
+                        default: return nil
+                        }
+                    }
+                    .sorted()
+
+                    ForEach(sortedPolicies, id: \.self) {
+                        ThemeModuleText(caption: $0)
+                    }
+                }
+            }
+    }
+
+    var ipv4Section: some View {
+        themeModuleSection(
+            if: ipRows(for: configuration.ipv4, routes: configuration.routes4),
+            header: Strings.Unlocalized.ipv4
+        ) {
+            ipSection(for: configuration.ipv4, routes: configuration.routes4)
+        }
+    }
+
+    var ipv6Section: some View {
+        themeModuleSection(
+            if: ipRows(for: configuration.ipv6, routes: configuration.routes6),
+            header: Strings.Unlocalized.ipv6
+        ) {
+            ipSection(for: configuration.ipv6, routes: configuration.routes6)
+        }
+    }
+
+    @ViewBuilder
+    func ipSection(for ip: IPSettings?, routes: [Route]?) -> some View {
         if let ip {
             ip.localizedDescription(optionalStyle: .address).map {
-                rows.append(.copiableText(caption: Strings.Global.Nouns.address, value: $0))
+                ThemeModuleCopiableText(caption: Strings.Global.Nouns.address, value: $0)
             }
             ip.localizedDescription(optionalStyle: .defaultGateway).map {
-                rows.append(.copiableText(caption: Strings.Global.Nouns.gateway, value: $0))
+                ThemeModuleCopiableText(caption: Strings.Global.Nouns.gateway, value: $0)
             }
 
             ip.includedRoutes
-                .filter { !$0.isDefault }
                 .nilIfEmpty
                 .map {
-                    rows.append(.textList(
+                    ThemeModuleTextList(
                         caption: Strings.Modules.Ip.Routes.included,
                         values: $0.map(\.localizedDescription)
-                    ))
+                    )
                 }
 
             ip.excludedRoutes
                 .nilIfEmpty
                 .map {
-                    rows.append(.textList(
+                    ThemeModuleTextList(
                         caption: Strings.Modules.Ip.Routes.excluded,
                         values: $0.map(\.localizedDescription)
-                    ))
+                    )
                 }
         }
-        routes?.forEach {
-            rows.append(.longContent(caption: Strings.Global.Nouns.route, value: $0.localizedDescription))
+        routes.map { routes in
+            ForEach(routes, id: \.self) {
+                ThemeModuleLongContent(
+                    caption: Strings.Global.Nouns.route,
+                    value: .constant($0.localizedDescription)
+                )
+            }
         }
-        return rows.nilIfEmpty
     }
 
-    var redirectRows: [ModuleRow]? {
-        configuration.routingPolicies?
-            .compactMap {
-                switch $0 {
-                case .IPv4: return Strings.Unlocalized.ipv4
-                case .IPv6: return Strings.Unlocalized.ipv6
-                default: return nil
+    var dnsSection: some View {
+        themeModuleSection(if: dnsRows, header: Strings.Unlocalized.dns) {
+            configuration.dnsServers?
+                .nilIfEmpty
+                .map {
+                    ThemeModuleTextList(
+                        caption: Strings.Global.Nouns.servers,
+                        values: $0
+                    )
                 }
-            }
-            .sorted()
-            .map {
-                .text(caption: $0)
-            }
-            .nilIfEmpty
-    }
 
-    var dnsRows: [ModuleRow]? {
-        var rows: [ModuleRow] = []
-
-        configuration.dnsServers?
-            .nilIfEmpty
-            .map {
-                rows.append(.textList(
-                    caption: Strings.Global.Nouns.servers,
-                    values: $0
-                ))
+            configuration.dnsDomain.map {
+                ThemeModuleCopiableText(
+                    caption: Strings.Global.Nouns.domain,
+                    value: $0
+                )
             }
 
-        configuration.dnsDomain.map {
-            rows.append(.copiableText(
-                caption: Strings.Global.Nouns.domain,
-                value: $0
-            ))
+            configuration.searchDomains?
+                .nilIfEmpty
+                .map {
+                    ThemeModuleTextList(
+                        caption: Strings.Entities.Dns.searchDomains,
+                        values: $0
+                    )
+                }
         }
-
-        configuration.searchDomains?
-            .nilIfEmpty
-            .map {
-                rows.append(.textList(
-                    caption: Strings.Entities.Dns.searchDomains,
-                    values: $0
-                ))
-            }
-
-        return rows.nilIfEmpty
     }
 
-    var proxyRows: [ModuleRow]? {
-        var rows: [ModuleRow] = []
-        configuration.httpProxy.map {
-            rows.append(.copiableText(
-                caption: Strings.Unlocalized.http,
-                value: $0.rawValue
-            ))
+    var proxySection: some View {
+        themeModuleSection(if: proxyRows, header: Strings.Unlocalized.proxy) {
+            configuration.httpProxy
+                .map {
+                    ThemeModuleCopiableText(
+                        caption: Strings.Unlocalized.http,
+                        value: $0.rawValue
+                    )
+                }
+
+            configuration.httpsProxy
+                .map {
+                    ThemeModuleCopiableText(
+                        caption: Strings.Unlocalized.https,
+                        value: $0.rawValue
+                    )
+                }
+
+            configuration.proxyAutoConfigurationURL
+                .map {
+                    ThemeModuleCopiableText(
+                        caption: Strings.Unlocalized.pac,
+                        value: $0.absoluteString
+                    )
+                }
+
+            configuration.proxyBypassDomains?
+                .nilIfEmpty
+                .map {
+                    ThemeModuleTextList(
+                        caption: Strings.Entities.HttpProxy.bypassDomains,
+                        values: $0
+                    )
+                }
         }
-        configuration.httpsProxy.map {
-            rows.append(.copiableText(
-                caption: Strings.Unlocalized.https,
-                value: $0.rawValue
-            ))
-        }
-        configuration.proxyAutoConfigurationURL.map {
-            rows.append(.copiableText(
-                caption: Strings.Unlocalized.pac,
-                value: $0.absoluteString
-            ))
-        }
-        configuration.proxyBypassDomains?
-            .nilIfEmpty
-            .map {
-                rows.append(.textList(
-                    caption: Strings.Entities.HttpProxy.bypassDomains,
-                    values: $0
-                ))
-            }
-        return rows.nilIfEmpty
     }
 
-    var communicationRows: [ModuleRow]? {
-        var rows: [ModuleRow] = []
-        configuration.cipher.map {
-            rows.append(.text(caption: Strings.Modules.Openvpn.cipher, value: $0.localizedDescription))
+    var communicationSection: some View {
+        themeModuleSection(if: communicationRows, header: Strings.Modules.Openvpn.communication) {
+            configuration.cipher
+                .map {
+                    ThemeModuleText(caption: Strings.Modules.Openvpn.cipher, value: $0.localizedDescription)
+                }
+
+            configuration.digest
+                .map {
+                    ThemeModuleText(caption: Strings.Modules.Openvpn.digest, value: $0.localizedDescription)
+                }
+
+            configuration.xorMethod
+                .map {
+                    ThemeModuleLongContentPreview(
+                        caption: Strings.Unlocalized.xor,
+                        value: .constant($0.localizedDescription(style: .long)),
+                        preview: $0.localizedDescription(style: .short)
+                    )
+                }
         }
-        configuration.digest.map {
-            rows.append(.text(caption: Strings.Modules.Openvpn.digest, value: $0.localizedDescription))
-        }
-        if let xorMethod = configuration.xorMethod {
-            rows.append(.longContentPreview(
-                caption: Strings.Unlocalized.xor,
-                value: xorMethod.localizedDescription(style: .long),
-                preview: xorMethod.localizedDescription(style: .short)
-            ))
-        }
-        return rows.nilIfEmpty
     }
 
-    var compressionRows: [ModuleRow]? {
-        var rows: [ModuleRow] = []
-        configuration.compressionFraming.map {
-            rows.append(.text(caption: Strings.Modules.Openvpn.compressionFraming, value: $0.localizedDescription))
+    var compressionSection: some View {
+        themeModuleSection(if: compressionRows, header: Strings.Modules.Openvpn.compression) {
+            configuration.compressionFraming
+                .map {
+                    ThemeModuleText(
+                        caption: Strings.Modules.Openvpn.compressionFraming,
+                        value: $0.localizedDescription
+                    )
+                }
+
+            configuration.compressionAlgorithm
+                .map {
+                    ThemeModuleText(
+                        caption: Strings.Modules.Openvpn.compressionAlgorithm,
+                        value: $0.localizedDescription
+                    )
+                }
         }
-        configuration.compressionAlgorithm.map {
-            rows.append(.text(caption: Strings.Modules.Openvpn.compressionAlgorithm, value: $0.localizedDescription))
-        }
-        return rows.nilIfEmpty
     }
 
-    var tlsRows: [ModuleRow]? {
-        var rows: [ModuleRow] = []
-        configuration.ca.map {
-            rows.append(.longContentPreview(caption: Strings.Unlocalized.ca, value: $0.pem, preview: nil))
+    var tlsSection: some View {
+        themeModuleSection(if: tlsRows, header: Strings.Unlocalized.tls) {
+            configuration.ca
+                .map {
+                    ThemeModuleLongContentPreview(
+                        caption: Strings.Unlocalized.ca,
+                        value: .constant($0.pem),
+                        preview: nil
+                    )
+                }
+
+            configuration.clientCertificate
+                .map {
+                    ThemeModuleLongContentPreview(
+                        caption: Strings.Global.Nouns.certificate,
+                        value: .constant($0.pem),
+                        preview: nil
+                    )
+                }
+
+            configuration.clientKey
+                .map {
+                    ThemeModuleLongContentPreview(
+                        caption: Strings.Global.Nouns.key,
+                        value: .constant($0.pem),
+                        preview: nil
+                    )
+                }
+
+            configuration.tlsWrap
+                .map {
+                    ThemeModuleLongContentPreview(
+                        caption: Strings.Modules.Openvpn.tlsWrap,
+                        value: .constant($0.key.hexString),
+                        preview: configuration.localizedDescription(style: .tlsWrap)
+                    )
+                }
+
+            ThemeModuleText(
+                caption: Strings.Modules.Openvpn.eku,
+                value: configuration.localizedDescription(style: .eku)
+            )
         }
-        configuration.clientCertificate.map {
-            rows.append(.longContentPreview(caption: Strings.Global.Nouns.certificate, value: $0.pem, preview: nil))
-        }
-        configuration.clientKey.map {
-            rows.append(.longContentPreview(caption: Strings.Global.Nouns.key, value: $0.pem, preview: nil))
-        }
-        configuration.tlsWrap.map {
-            rows.append(.longContentPreview(
-                caption: Strings.Modules.Openvpn.tlsWrap,
-                value: $0.key.hexString,
-                preview: configuration.localizedDescription(style: .tlsWrap)
-            ))
-        }
-        rows.append(.text(caption: Strings.Modules.Openvpn.eku, value: configuration.localizedDescription(style: .eku)))
-        return rows.nilIfEmpty
     }
 
-    var keepAliveRows: [ModuleRow]? {
-        var rows: [ModuleRow] = []
-        configuration.localizedDescription(optionalStyle: .keepAlive).map {
-            rows.append(.text(caption: Strings.Global.Nouns.interval, value: $0))
+    var keepAliveSection: some View {
+        themeModuleSection(if: keepAliveRows, header: Strings.Global.Nouns.keepAlive) {
+            configuration.localizedDescription(optionalStyle: .keepAlive)
+                .map {
+                    ThemeModuleText(caption: Strings.Global.Nouns.interval, value: $0)
+                }
+
+            configuration.localizedDescription(optionalStyle: .keepAliveTimeout)
+                .map {
+                    ThemeModuleText(caption: Strings.Global.Nouns.timeout, value: $0)
+                }
         }
-        configuration.localizedDescription(optionalStyle: .keepAliveTimeout).map {
-            rows.append(.text(caption: Strings.Global.Nouns.timeout, value: $0))
-        }
-        return rows.nilIfEmpty
     }
 
-    var otherRows: [ModuleRow]? {
-        var rows: [ModuleRow] = []
-        configuration.localizedDescription(optionalStyle: .renegotiatesAfter).map {
-            rows.append(.text(caption: Strings.Modules.Openvpn.renegotiation, value: $0))
+    var otherSection: some View {
+        themeModuleSection(if: otherRows, header: Strings.Global.Nouns.other) {
+            configuration.localizedDescription(optionalStyle: .renegotiatesAfter)
+                .map {
+                    ThemeModuleText(caption: Strings.Modules.Openvpn.renegotiation, value: $0)
+                }
+
+            configuration.localizedDescription(optionalStyle: .randomizeEndpoint)
+                .map {
+                    ThemeModuleText(caption: Strings.Modules.Openvpn.randomizeEndpoint, value: $0)
+                }
+
+            configuration.localizedDescription(optionalStyle: .randomizeHostnames)
+                .map {
+                    ThemeModuleText(caption: Strings.Modules.Openvpn.randomizeHostname, value: $0)
+                }
         }
-        configuration.localizedDescription(optionalStyle: .randomizeEndpoint).map {
-            rows.append(.text(caption: Strings.Modules.Openvpn.randomizeEndpoint, value: $0))
+    }
+}
+
+private extension OpenVPNView.ConfigurationView {
+    var accountRows: [Any?] {
+        guard credentialsRoute != nil else {
+            return []
         }
-        configuration.localizedDescription(optionalStyle: .randomizeHostnames).map {
-            rows.append(.text(caption: Strings.Modules.Openvpn.randomizeHostname, value: $0))
+        guard configuration.authUserPass == true else {
+            return []
         }
-        return rows.nilIfEmpty
+        return [
+            configuration.authUserPass == true ? configuration.authUserPass : nil
+        ]
+    }
+
+    var pullRows: [Any?] {
+        [
+            configuration.pullMask?.nilIfEmpty
+        ]
+    }
+
+    var redirectRows: [Any?] {
+        [
+            configuration.routingPolicies?.nilIfEmpty
+        ]
+    }
+
+    func ipRows(for ip: IPSettings?, routes: [Route]?) -> [Any?] {
+        guard let ip else {
+            return []
+        }
+        return [
+            ip.subnet,
+            ip.localizedDescription(optionalStyle: .defaultGateway),
+            ip.includedRoutes.nilIfEmpty,
+            ip.excludedRoutes.nilIfEmpty
+        ]
+    }
+
+    var dnsRows: [Any?] {
+        [
+            configuration.dnsServers?.nilIfEmpty,
+            configuration.dnsDomain,
+            configuration.searchDomains?.nilIfEmpty
+        ]
+    }
+
+    var proxyRows: [Any?] {
+        [
+            configuration.httpProxy,
+            configuration.httpsProxy,
+            configuration.proxyAutoConfigurationURL,
+            configuration.proxyBypassDomains?.nilIfEmpty
+        ]
+    }
+
+    var communicationRows: [Any?] {
+        [
+            configuration.cipher,
+            configuration.digest,
+            configuration.xorMethod
+        ]
+    }
+
+    var compressionRows: [Any?] {
+        [
+            configuration.compressionFraming,
+            configuration.compressionAlgorithm
+        ]
+    }
+
+    var tlsRows: [Any?] {
+        [
+            configuration.ca,
+            configuration.clientCertificate,
+            configuration.clientKey,
+            configuration.tlsWrap
+        ]
+    }
+
+    var keepAliveRows: [Any?] {
+        [
+            configuration.keepAliveTimeout,
+            configuration.keepAliveInterval
+        ]
+    }
+
+    var otherRows: [Any?] {
+        [
+            configuration.renegotiatesAfter,
+            configuration.randomizeEndpoint,
+            configuration.randomizeHostnames
+        ]
     }
 }
 
@@ -284,7 +446,7 @@ private extension OpenVPNView.ConfigurationView {
     Form {
         OpenVPNView.ConfigurationView(
             isServerPushed: false,
-            configuration: .forPreviews,
+            configuration: .constant(.forPreviews),
             credentialsRoute: nil
         )
     }
